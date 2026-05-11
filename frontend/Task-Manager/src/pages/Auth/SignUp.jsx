@@ -81,7 +81,7 @@ const handleSignUp = async (e) => {
         value={adminInviteToken}
         onChange={({ target }) => setAdminInviteToken(target.value)}
         label="Admin Invite Token"
-        placeholder="6 Digit Code"
+        placeholder="8 Digit Code"
         type="text"
         />
         </div>
