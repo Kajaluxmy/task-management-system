@@ -9,6 +9,8 @@ import moment from "moment";
 import InfoCard from "../../components/Cards/InfoCard";
 import { IoMdCard } from "react-icons/io";
 import { addThousandsSeparator } from "../../utils/helper";
+import { LuArrowRight } from "react-icons/lu";
+import TaskListTable from "../../components/TaskListTable";
 
 const Dashboard = () => {
   useUserAuth();
@@ -34,6 +36,10 @@ const Dashboard = () => {
     }
   };
 
+  const onSeeMore = () =>{
+    navigate('/admin/tasks')
+  }
+
   useEffect(() => {
     getDashboardData();
     return () => {};
@@ -45,7 +51,7 @@ const Dashboard = () => {
         <div>
           <div className="col-span-3">
             <h2 className="text-xl md:text-2xl">Good Morning! {user?.name}</h2>
-            <p className="text-xs md-text-[13px] text-gray-400 mt-1.5">
+            <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
               {moment().format("dddd Do MMM YYYY")}
             </p>
           </div>
@@ -88,6 +94,19 @@ const Dashboard = () => {
             color="bg-lime-500"
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
+      <div className="md:col-span-2">
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <h5 className="text-lg">Recent Tasks</h5>  
+
+            <button className="card-btn" onClick={onSeeMore}>See All <LuArrowRight className="text-base"/></button>        
+          </div>
+          <TaskListTable tableData={dashboardData?.recentTasks || []} />
+        </div>
+      </div>
       </div>
     </DashboardLayout>
   );
