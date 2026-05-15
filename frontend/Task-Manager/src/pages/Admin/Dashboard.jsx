@@ -12,6 +12,7 @@ import { addThousandsSeparator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
+import CustomBarChart from "../../components/Charts/CustomBarChart"; 
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
@@ -130,6 +131,16 @@ const Dashboard = () => {
           </div>
         </div>
 
+        <div>
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <h5 className="font-medium">Task Priority Levels</h5>
+            </div>
+
+            <CustomBarChart data={barChartData} />
+          </div>
+        </div>
+
         <div className="md:col-span-2">
           <div className="card">
             <div className="flex items-center justify-between">
@@ -148,3 +159,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
