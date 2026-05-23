@@ -24,6 +24,7 @@ import ViewTaskDetails from "./pages/User/ViewTaskDetails";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider from "./context/userContext";
+import { Toaster } from "react-hot-toast";
 
 
 const Root = () => {
@@ -72,6 +73,15 @@ const App = () => {
           </Routes>
         </Router>
       </div>
+
+      <Toaster
+      toastOptions={{
+        className:"",
+        style:{
+          fontSize: "13px",
+        },
+      }}
+      />
     </UserProvider>
   );
 };
