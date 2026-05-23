@@ -10,7 +10,7 @@ import { LuTrash2 } from "react-icons/lu";
 import SelectDropdown from "../../components/Inputs/SelectDropdown";
 import TodoListInput from "../../components/Inputs/TodoListInput";
 import SelectUsers from "./SelectUsers";
-import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput"; 
+import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
 
 const CreateTask = () => {
   const location = useLocation();
@@ -28,10 +28,8 @@ const CreateTask = () => {
   });
 
   const [currentTask, setCurrentTask] = useState(null);
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
   const handleValueChange = (key, value) => {
@@ -52,30 +50,26 @@ const CreateTask = () => {
 
   const createTask = async () => {
     setLoading(true);
+    try {
+      const todolist = taskData.todoChecklist?.map((item) => ({
+        text: item,
+        completed: false,
+      }));
 
-      try{
-        const todolist = taskData.todoChecklist?.map((item) => ({
-          text: item,
-          completed: false,
-        }));
+      const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
+        ...taskData,
+        dueDate: new Date(taskData.dueDate).toISOString(),
+        todoChecklist: todolist,
+      });
 
-        const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
-          ...taskData,
-          dueDate: new Date(taskData.dueDate).toISOString(),
-          todoChecklist:todolist,
-        });
+      toast.success("Task Created Successfully");
+      clearData();
 
-        toast.success("Task Created Successfully");
-
-        clearData();
-
-      } catch (error){
-        console.log("Error creating task: ",error);
-        setLoading(false);
-
-      }finally{
-        setLoading(false);
-      }
+    } catch (error) {
+      console.log("Error creating task:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateTask = async () => {};
@@ -83,18 +77,18 @@ const CreateTask = () => {
   const handleSubmit = async () => {
     setError(null);
 
-    if(!taskData.title.trim()){
+    if(!taskData.title.trim()) {
       setError("Title is required.");
       return;
     }
 
-      if(!taskData.description.trim()){
+    if(!taskData.description.trim()) {
       setError("Description is required.");
       return;
-      }
+    }
 
-      if(!taskData.dueDate){
-      setError("Due data is required.");
+    if(!taskData.dueDate) {
+      setError("Due date is required.");
       return;
     }
 
@@ -108,13 +102,12 @@ const CreateTask = () => {
       return;
     }
 
-      if(taskId) {
+    if(taskId) {
       updateTask();
       return;
     }
 
     createTask();
-
   };
 
   const getTaskDetailsByID = async () => {};
@@ -156,7 +149,6 @@ const CreateTask = () => {
 
             <div className="mt-3 text-slate-600">
               <label className="text-xs font-medium">Description</label>
-
               <textarea
                 placeholder="Describe task"
                 className="form-input"
@@ -173,7 +165,6 @@ const CreateTask = () => {
                 <label className="text-xs font-medium text-slate-600">
                   Priority
                 </label>
-
                 <SelectDropdown
                   options={PRIORITY_DATA}
                   value={taskData.priority}
@@ -186,9 +177,7 @@ const CreateTask = () => {
                 <label className="text-xs font-medium text-slate-600">
                   Due Date
                 </label>
-
                 <input
-                  placeholder="Create App UI"
                   className="form-input"
                   value={taskData.dueDate || ""}
                   onChange={({ target }) =>
@@ -202,7 +191,6 @@ const CreateTask = () => {
                 <label className="text-xs font-medium text-slate-600">
                   Assign To
                 </label>
-
                 <SelectUsers
                   selectedUsers={taskData.assignedTo}
                   setSelectedUsers={(value) => {
@@ -228,7 +216,6 @@ const CreateTask = () => {
               <label className="text-xs font-medium text-slate-600">
                 Add Attachments
               </label>
-
               <AddAttachmentsInput
                 attachments={taskData?.attachments}
                 setAttachments={(value) =>
@@ -236,17 +223,19 @@ const CreateTask = () => {
                 }
               />
             </div>
-            
+
             {error && (
               <p className="text-xs font-medium text-red-500 mt-5">{error}</p>
             )}
 
             <div className="flex justify-end mt-7">
               <button
-              className="add-btn"
-              onClick={handleSubmit}
-              disabled={loading}
-              >{taskId ? "Update Task" : "Create Task"}</button>
+                className="add-btn"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {taskId ? "Update Task" : "Create Task"}
+              </button>
             </div>
           </div>
         </div>
