@@ -10,7 +10,7 @@ import { LuTrash2 } from "react-icons/lu";
 import SelectDropdown from "../../components/Inputs/SelectDropdown";
 import TodoListInput from "../../components/Inputs/TodoListInput";
 import SelectUsers from "./SelectUsers";
-import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
+import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput"; 
 
 const CreateTask = () => {
   const location = useLocation();
@@ -50,11 +50,47 @@ const CreateTask = () => {
     });
   };
 
-  const createTask = async () => {};
+  const createTask = async () => {
+  };
 
   const updateTask = async () => {};
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    setError(null);
+
+    if(!taskData.title.trim()){
+      setError("Title is required.");
+      return;
+    }
+
+      if(!taskData.description.trim()){
+      setError("Description is required.");
+      return;
+      }
+
+      if(!taskData.dueDate){
+      setError("Due data is required.");
+      return;
+    }
+
+    if(taskData.assignedTo?.length === 0) {
+      setError("Task not assigned to any member");
+      return;
+    }
+
+    if(taskData.todoChecklist?.length === 0) {
+      setError("Add atleast one todo task");
+      return;
+    }
+
+      if(taskId) {
+      updateTask();
+      return;
+    }
+
+    createTask();
+
+  };
 
   const getTaskDetailsByID = async () => {};
   const deleteTask = async () => {};
@@ -175,19 +211,17 @@ const CreateTask = () => {
                 }
               />
             </div>
-
+            
             {error && (
               <p className="text-xs font-medium text-red-500 mt-5">{error}</p>
             )}
 
             <div className="flex justify-end mt-7">
               <button
-                className="add-btn"
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {taskId ? "Update Task" : "Create Task"}
-              </button>
+              className="add-btn"
+              onClick={handleSubmit}
+              disabled={loading}
+              >{taskId ? "Update Task" : "Create Task"}</button>
             </div>
           </div>
         </div>
