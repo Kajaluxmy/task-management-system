@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { LuFileSpreadsheet } from "react-icons/lu";
-
+import TaskStatusTabs from "../../components/TaskStatusTabs";
 const ManageTasks = () => {
   const [allTasks, setAllTasks] = useState([]);
 
@@ -63,6 +63,19 @@ const ManageTasks = () => {
               Download Report
             </button>
           </div>
+
+          {tabs?.[0]?.count > 0 && (
+            <div className="flex items-center gap-3">
+              <TaskStatusTabs tabs={tabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+              <button
+                className="hidden lg:flex download-btn"
+                onClick={handleDownloadReport}
+              >
+                <LuFileSpreadsheet className="text-lg" />
+                Download Report
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
