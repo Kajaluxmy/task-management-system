@@ -5,6 +5,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
+import TaskCard from "../../components/cards/TaskCard";
+
 const ManageTasks = () => {
   const [allTasks, setAllTasks] = useState([]);
 
@@ -23,7 +25,7 @@ const ManageTasks = () => {
 
       setAllTasks(response.data?.tasks?.length > 0 ? response.data.tasks : []);
 
-      const statusSummary = response.data?.status || {};
+      const statusSummary = response.data?.statusSummary || {};
 
       const statusArray = [
         { label: "All", count: statusSummary.all || 0 },
@@ -76,6 +78,28 @@ const ManageTasks = () => {
               </button>
             </div>
           )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          {allTasks?.map((item, index) => (
+  <TaskCard
+    key={item._id}
+    title={item.title}
+    description={item.description}
+    priority={item.priority}
+    status={item.status}
+    progress={item.progress}
+    createdAt={item.createdAt}
+    dueDate={item.dueDate}
+    assignedTo={item.assignedTo?.map((user) => user.profileImageUrl)}
+    attachmentCount={item.attachments?.length || 0}
+    completedTodoCount={item.completedCount || 0}
+    todoChecklist={item.todoChecklist || []}
+    onClick={() => {
+      handleClick(item);
+    }}
+  />
+))}
         </div>
       </div>
     </DashboardLayout>
