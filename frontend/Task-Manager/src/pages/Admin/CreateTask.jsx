@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { PRIORITY_DATA } from "../../utils/data";
@@ -64,7 +64,6 @@ const CreateTask = () => {
 
       toast.success("Task Created Successfully");
       clearData();
-
     } catch (error) {
       console.log("Error creating task:", error);
     } finally {
@@ -77,32 +76,32 @@ const CreateTask = () => {
   const handleSubmit = async () => {
     setError(null);
 
-    if(!taskData.title.trim()) {
+    if (!taskData.title.trim()) {
       setError("Title is required.");
       return;
     }
 
-    if(!taskData.description.trim()) {
+    if (!taskData.description.trim()) {
       setError("Description is required.");
       return;
     }
 
-    if(!taskData.dueDate) {
+    if (!taskData.dueDate) {
       setError("Due date is required.");
       return;
     }
 
-    if(taskData.assignedTo?.length === 0) {
+    if (taskData.assignedTo?.length === 0) {
       setError("Task not assigned to any member");
       return;
     }
 
-    if(taskData.todoChecklist?.length === 0) {
+    if (taskData.todoChecklist?.length === 0) {
       setError("Add atleast one todo task");
       return;
     }
 
-    if(taskId) {
+    if (taskId) {
       updateTask();
       return;
     }
@@ -110,8 +109,43 @@ const CreateTask = () => {
     createTask();
   };
 
-  const getTaskDetailsByID = async () => {};
+  const getTaskDetailsByID = async () => {
+    try {
+      const response = await axiosInstance.get(
+        API_PATHS.TASKS.GET_TASK_BY_ID(taskId),
+      );
+
+      if (response.data) {
+        const taskInfo = response.data;
+        setCurrentTask(taskInfo);
+
+        setTaskData((prevState) => ({
+          title: taskInfo.title,
+          description: taskInfo.description,
+          priority: taskInfo.priority,
+          dueDate: taskInfo.dueDate
+            ? moment(taskInfo.dueDate).format("YYYY-MM-DD")
+            : null,
+          assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
+          todoChecklist:
+            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
+          attachments: taskInfo?.attachments || [],
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching task:", error);
+    }
+  };
+
   const deleteTask = async () => {};
+
+  useEffect(() => {
+    if (taskId) {
+      getTaskDetailsByID(taskId);
+    }
+
+    return () => {};
+  }, [taskId]);
 
   return (
     <DashboardLayout activeMenu="Create Task">
