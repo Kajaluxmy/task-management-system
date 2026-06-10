@@ -21,6 +21,7 @@ import ManageUsers from "./pages/Admin/ManageUsers";
 import UserDashboard from "./pages/User/UserDashboard";
 import MyTasks from "./pages/User/MyTasks";
 import ViewTaskDetails from "./pages/User/ViewTaskDetails";
+import Profile from "./pages/Profile";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider from "./context/userContext";
@@ -58,15 +59,14 @@ const App = () => {
               <Route path="/admin/tasks" element={<ManageTasks />} />
               <Route path="/admin/create-task" element={<CreateTask />} />
               <Route path="/admin/users" element={<ManageUsers />} />
+              <Route path="/admin/profile" element={<Profile />} />  
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["user"]} />}>
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/user/tasks" element={<MyTasks />} />
-              <Route
-                path="/user/task-details/:id"
-                element={<ViewTaskDetails />}
-              />
+              <Route path="/user/task-details/:id" element={<ViewTaskDetails />} />
+              <Route path="/user/profile" element={<Profile />} />
             </Route>
 
             <Route path="/" element={<Root />} />
