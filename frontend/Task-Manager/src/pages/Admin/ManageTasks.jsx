@@ -3,16 +3,21 @@ import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
-import { LuFileSpreadsheet } from "react-icons/lu";
+import { LuFileSpreadsheet, LuSearch  } from "react-icons/lu";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
 import TaskCard from "../../components/cards/TaskCard";
 import { toast } from "react-hot-toast"; 
+import { useUserAuth } from "../../hooks/useUserAuth";          
+import { PRIORITY_DATA } from "../../utils/data";
 
 const ManageTasks = () => {
-  const [allTasks, setAllTasks] = useState([]);
+  useUserAuth(); 
 
+  const [allTasks, setAllTasks] = useState([]);
   const [tabs, setTabs] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
+  const [search, setSearch] = useState("");
+  const [filterPriority, setFilterPriority] = useState("All");
 
   const navigate = useNavigate();
 
@@ -21,6 +26,8 @@ const ManageTasks = () => {
       const response = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS, {
         params: {
           status: filterStatus === "All" ? "" : filterStatus,
+           priority: filterPriority === "All" ? "" : filterPriority,  
+          search: search || "",  
         },
       });
 
@@ -68,7 +75,7 @@ const ManageTasks = () => {
   useEffect(() => {
     getAllTasks(filterStatus);
     return () => {};
-  }, [filterStatus]);
+  }, [filterStatus, filterPriority]);
 
   return (
     <DashboardLayout activeMenu="Manage Tasks">
@@ -103,8 +110,49 @@ const ManageTasks = () => {
           )}
         </div>
 
+        <div className="flex flex-col md:flex-row gap-3 mt-4">
+
+          {/* Search */}
+          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2 flex-1">
+            <LuSearch className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full outline-none text-sm text-black"
+            />
+            <button
+              onClick={getAllTasks}
+              className="text-sm text-primary font-medium"
+            >
+              Search
+            </button>
+          </div>
+
+          {/* Priority Filter */}
+          <select
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+            className="border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none"
+          >
+            <option value="All">All Priority</option>
+            {PRIORITY_DATA.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allTasks?.map((item, index) => (
+          {allTasks?.length === 0 ? (
+            <p className="text-sm text-gray-500 col-span-3">
+              No tasks found
+            </p>
+          ) : (
+          allTasks?.map((item, index) => (
             <TaskCard
               key={item._id}
               title={item.title}
@@ -122,7 +170,8 @@ const ManageTasks = () => {
                 handleClick(item);
               }}
             />
-          ))}
+          ))
+          )}
         </div>
       </div>
     </DashboardLayout>

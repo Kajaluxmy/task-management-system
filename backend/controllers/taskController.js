@@ -2,11 +2,19 @@ const Task = require("../models/Task");
 
 const getTasks = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, priority, search } = req.query;
     let filter = {};
 
     if (status) {
       filter.status = status;
+    }
+
+    if (priority) {
+      filter.priority = priority;
+    }
+
+    if (search) {
+      filter.title = { $regex: search, $options: "i" };
     }
 
     let tasks;
