@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+const Notification = require("../models/Notification");
 
 const getTasks = async (req, res) => {
   try {
@@ -121,6 +122,19 @@ const createTask = async (req, res) => {
       todoChecklist,
       attachments,
     });
+
+    const notifications = assignedTo.map((userId) => ({
+      user: userId,
+      title: "New Task Assigned",
+      message: `You have been assigned a new task: "${title}"`,
+      type: "task_assigned",
+      relatedTask: task._id,
+    }));
+
+  
+    if (notifications.length > 0) {
+      await Notification.insertMany(notifications);
+    }
 
     res.status(201).json({ message: "Task created successfully", task });
   } catch (error) {
