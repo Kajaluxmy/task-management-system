@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import moment from "moment";
-import InfoCard from "../../components/Cards/InfoCard";
+import InfoCard from "../../components/cards/InfoCard";
 import { IoMdCard } from "react-icons/io";
 import { addThousandsSeparator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
